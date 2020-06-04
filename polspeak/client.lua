@@ -1,3 +1,25 @@
+local ESX      = nil
+local PlayerData = {}
+
+-- ESX
+Citizen.CreateThread(function()
+	while ESX == nil do
+		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+		Citizen.Wait(0)
+	end
+end)
+
+RegisterNetEvent('esx:playerLoaded')
+AddEventHandler('esx:playerLoaded', function(xPlayer)
+	PlayerData = xPlayer
+end)
+
+RegisterNetEvent('esx:setJob')
+AddEventHandler('esx:setJob', function(job)
+	PlayerData.job = job
+end)
+
+
 _menuPool = NativeUI.CreatePool()
 mainMenu = NativeUI.CreateMenu("PolSpeak", "~b~POLICE MEGAPHONE")
 _menuPool:Add(mainMenu)
@@ -383,7 +405,7 @@ Citizen.CreateThread(function()
     while true do
     Citizen.Wait(0)
       _menuPool:ProcessMenus()
-
+	if PlayerData.job ~= nil and PlayerData.job.name == "police" then
         if IsControlJustPressed(1, 57) then
           if vehicleType(GetVehiclePedIsUsing(GetPlayerPed(-1))) then
             mainMenu:Visible(not mainMenu:Visible())
@@ -396,6 +418,7 @@ Citizen.CreateThread(function()
           end
         end
     end
+	end
 end)
 
 
